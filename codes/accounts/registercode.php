@@ -1,9 +1,9 @@
 <?php
 
-$dbname = "sheen_Shoppee";
-$dbusername = "sheen_ourdb1";
-$dbpassword = "11041987justin";
-$dbhost = "localhost";
+$dbname = "shoppee";
+$dbusername = "root";
+$dbpassword = "";
+$dbhost = "localhost";//localhost
 
 $conn = new mysqli($dbhost, $dbusername, $dbpassword, $dbname);
 
@@ -20,6 +20,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO users (Username, Password, Email, UserID) VALUES ('$username', '$password', '$email', $userID)";
 
     $conn->query($sql);
+
+    
+    // the message
+    $msg = "Test";
+
+    // use wordwrap() if lines are longer than 70 characters
+    $msg = wordwrap($msg,70);
+
+    // send email
+    mail("guiribajustin2004@gmail.com","My subject",$msg);
 
 }
 
