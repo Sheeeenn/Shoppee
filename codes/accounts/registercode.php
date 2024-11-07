@@ -12,25 +12,29 @@ if($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $userID = 233;
+    $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
+    $username = htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8');
+    $password = htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8');
+    $randID = random_int(10000000000, 99999999999);
+    $userID = $randID;
 
-    $sql = "INSERT INTO users (Username, Password, Email, UserID) VALUES ('$username', '$password', '$email', $userID)";
+    $prep = $conn->prepare("INSERT INTO users (Username, Password, Email, UserID) VALUES (?, ?, ?, ?)");
 
-    $conn->query($sql);
+    if ($prep === false) {
+        die("Error preparing the query: " . $conn->error);
+    }
 
-    
-    // the message
-    $msg = "Test";
+    $prep->bind_param("sssi", $username, $password, $email, $userID);
 
-    // use wordwrap() if lines are longer than 70 characters
-    $msg = wordwrap($msg,70);
+    // Execute the query
+    // if ($prep->execute()) {
+    //     echo "User successfully registered.";
+    // } else {
+    //     echo "Error executing the query: " . $prep->error;
+    // }
 
-    // send email
-    mail("guiribajustin2004@gmail.com","My subject",$msg);
-
+    // Close the prepared statement
+    $prep->close();
 }
 
 $conn->close();
