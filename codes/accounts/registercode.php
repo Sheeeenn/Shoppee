@@ -1,15 +1,6 @@
 <?php
 
-$dbname = "shoppee";
-$dbusername = "root";
-$dbpassword = "";
-$dbhost = "localhost";//localhost
-
-$conn = new mysqli($dbhost, $dbusername, $dbpassword, $dbname);
-
-if($conn->connect_error) {
-    die("Connection Failed: " . $conn->connect_error);
-}
+require("codes/database/connection.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
@@ -25,16 +16,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $prep->bind_param("sssi", $username, $password, $email, $userID);
-
-    // Execute the query
-    // if ($prep->execute()) {
-    //     echo "User successfully registered.";
-    // } else {
-    //     echo "Error executing the query: " . $prep->error;
-    // }
-
-    // Close the prepared statement
+    $prep->execute();
     $prep->close();
+
+    session_start();
+    $_SESSION["UserID"] = $userID;
+    header("location: /");
 }
 
 $conn->close();
